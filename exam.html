@@ -25,6 +25,8 @@
       </form>
 
       <div id="resultBox" class="result-box hidden"></div>
+
+      <canvas id="certificateCanvas" style="display: none;"></canvas>
     </div>
   </div>
 
@@ -99,6 +101,7 @@
         options: ["Характеристики бойца", "Цвет ника", "Название клуба", "Размер карты"],
         answer: "А"
       },
+
       {
         level: "Уровень 2. Сложный",
         points: 4,
@@ -156,6 +159,7 @@
         options: ["Легендарная", "Мифическая", "Эпическая", "Ультра-легендарная"],
         answer: "Г"
       },
+
       {
         level: "Уровень 3. Максимальная сложность",
         points: 5,
@@ -262,6 +266,9 @@
     let resultAlreadySent = false;
     let timerInterval = null;
     let antiCheatInterval = null;
+
+    let certificateScore = null;
+    let certificateMaxScore = null;
 
     setTimeout(function() {
       antiCheatEnabled = true;
@@ -390,6 +397,9 @@
         finishedAt: new Date().toLocaleString("ru-RU")
       };
 
+      certificateScore = autoScore;
+      certificateMaxScore = autoMaxScore;
+
       localStorage.setItem("brawlExamResult", JSON.stringify(result));
 
       sendResultToGoogleSheets(result, function(response) {
@@ -445,6 +455,10 @@
         <p><b>Telegram:</b> ${userData.telegram}</p>
         <p><b>Результат:</b> ${autoScore} из ${autoMaxScore} баллов</p>
         <p class="small-text">Результат отправлен.</p>
+
+        <button type="button" onclick="downloadCertificate()" class="certificate-btn">
+          Скачать сертификат
+        </button>
       `;
 
       localStorage.removeItem("brawlExamStartTime");
@@ -473,13 +487,20 @@
       resultBox.classList.remove("hidden");
 
       let oldResultText = "";
+      let canDownloadOldCertificate = false;
 
       if (response && String(response.oldScore).toLowerCase() === "удален") {
         oldResultText = "Удален";
+        canDownloadOldCertificate = false;
       } else if (response && response.oldScore !== undefined) {
         oldResultText = `${response.oldScore} из ${response.oldMaxScore || 100} баллов`;
+
+        certificateScore = response.oldScore;
+        certificateMaxScore = response.oldMaxScore || 100;
+        canDownloadOldCertificate = true;
       } else {
         oldResultText = "уже сохранён ранее";
+        canDownloadOldCertificate = false;
       }
 
       resultBox.innerHTML = `
@@ -489,6 +510,11 @@
         <p><b>Будет сохранён ваш старый результат: ${oldResultText}</b></p>
         <p><b>Новая попытка не принимается к зачёту.</b></p>
         <p class="small-text">Если вы считаете, что произошла ошибка, обратитесь к организатору экзамена.</p>
+        ${
+          canDownloadOldCertificate
+            ? `<button type="button" onclick="downloadCertificate()" class="certificate-btn">Скачать сертификат</button>`
+            : ``
+        }
       `;
 
       localStorage.removeItem("brawlExamStartTime");
@@ -608,6 +634,90 @@
       } catch (error) {
         console.log("Не удалось отправить при закрытии:", error);
       }
+    }
+
+    function downloadCertificate() {
+      if (certificateScore === null || certificateMaxScore === null) {
+        alert("Сертификат доступен только после успешного завершения экзамена.");
+        return;
+      }
+
+      const canvas = document.getElementById("certificateCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const certificateImage = new Image();
+      certificateImage.src = "certificate.png";
+
+      certificateImage.onload = function() {
+        canvas.width = certificateImage.width;
+        canvas.height = certificateImage.height;
+
+        ctx.drawImage(certificateImage, 0, 0, canvas.width, canvas.height);
+
+        drawCertificateData(ctx, canvas);
+
+        const link = document.createElement("a");
+        link.download = makeCertificateFileName();
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      };
+
+      certificateImage.onerror = function() {
+        alert("Не удалось загрузить certificate.png. Проверь, что файл лежит рядом с index.html и exam.html.");
+      };
+    }
+
+    function drawCertificateData(ctx, canvas) {
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.fillStyle = "#111827";
+      ctx.textAlign = "center";
+
+      drawAdaptiveText(
+        ctx,
+        userData.fullName || "Участник",
+        width / 2,
+        height * 0.50,
+        width * 0.62,
+        64,
+        "Georgia",
+        "bold"
+      );
+
+      ctx.font = "bold 38px Arial";
+      ctx.fillText(
+        `Результат: ${certificateScore} из ${certificateMaxScore} баллов`,
+        width / 2,
+        height * 0.66
+      );
+
+      ctx.textAlign = "left";
+      ctx.font = "bold 28px Arial";
+      ctx.fillText(
+        userData.telegram || "@username",
+        width * 0.25,
+        height * 0.865
+      );
+    }
+
+    function drawAdaptiveText(ctx, text, x, y, maxWidth, startSize, fontFamily, fontWeight) {
+      let fontSize = startSize;
+
+      do {
+        ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+        fontSize -= 2;
+      } while (ctx.measureText(text).width > maxWidth && fontSize > 30);
+
+      ctx.fillText(text, x, y);
+    }
+
+    function makeCertificateFileName() {
+      const name = (userData.fullName || "certificate")
+        .replace(/[^\p{L}\p{N}_-]+/gu, "_")
+        .replace(/_+/g, "_");
+
+      return `certificate_${name}.png`;
     }
   </script>
 
