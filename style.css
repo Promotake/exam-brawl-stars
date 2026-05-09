@@ -1,0 +1,199 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: #fff;
+  }
+  
+  .container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 35px 20px;
+  }
+  
+  .card {
+    width: 100%;
+    max-width: 430px;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+  }
+  
+  .exam-card {
+    max-width: 900px;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #e5e5e5;
+    line-height: 1.4;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 15px;
+  }
+  
+  input {
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+  }
+  
+  input:focus,
+  textarea:focus {
+    box-shadow: 0 0 0 3px rgba(255, 214, 10, 0.6);
+  }
+  
+  .checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .checkbox input {
+    width: 18px;
+    height: 18px;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #ffd60a;
+    color: #111;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    background: #ffea00;
+  }
+  
+  .timer-box {
+    margin: 25px 0;
+    padding: 18px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  #timer {
+    color: #ffd60a;
+    font-size: 28px;
+  }
+  
+  .level-title {
+    margin: 35px 0 20px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255, 214, 10, 0.2);
+    color: #ffd60a;
+    text-align: center;
+  }
+  
+  .question-block {
+    margin-bottom: 24px;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.13);
+  }
+  
+  .question-block h3 {
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  
+  .question-points {
+    margin-bottom: 14px;
+    color: #ffd60a;
+    font-weight: bold;
+  }
+  
+  .answer-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 11px;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+  }
+  
+  .answer-option input {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .answer-option:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+  
+  textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .result-box {
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.25);
+    text-align: center;
+    line-height: 1.6;
+  }
+  
+  .result-box h2 {
+    margin-bottom: 15px;
+    color: #ffd60a;
+  }
+  
+  .small-text {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ddd;
+  }
+  
+  .hidden {
+    display: none;
+  }

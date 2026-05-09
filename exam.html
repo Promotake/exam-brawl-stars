@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Экзамен по Brawl Stars</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="card exam-card">
+      <h1>Экзамен по Brawl Stars</h1>
+
+      <div class="timer-box">
+        Осталось времени:
+        <span id="timer">40:00</span>
+      </div>
+
+      <p class="subtitle" id="userInfo"></p>
+
+      <form id="examForm">
+        <div id="questionsContainer"></div>
+        <button type="submit">Завершить экзамен</button>
+      </form>
+
+      <div id="resultBox" class="result-box hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMn5EHC2nSKN7nYKz_y-HSAz8s2WNnyHG5WlfXWqGS4N0EiLQralSz5L5-svmURlTxYg/exec";
+
+    const userData = JSON.parse(localStorage.getItem("brawlExamUser"));
+    const startTime = Number(localStorage.getItem("brawlExamStartTime"));
+
+    if (!userData || !startTime) {
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("userInfo").textContent =
+      `Участник: ${userData.fullName} | Supercell ID: ${userData.supercellId} | Telegram: ${userData.telegram}`;
+
+    const questions = [
+      {
+        level: "Уровень 1. Лёгкий",
+        points: 3,
+        type: "choice",
+        text: "Какой режим в Brawl Stars считается классическим режимом 3 на 3 с кристаллами?",
+        options: ["Ограбление", "Захват кристаллов", "Нокаут", "Столкновение"],
+        answer: "Б"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Что такое Supercell ID?",
+        options: ["Название бойца", "Аккаунт для сохранения прогресса", "Валюта в игре", "Название клуба"],
+        answer: "Б"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Что происходит, когда здоровье бойца падает до нуля?",
+        options: ["Он получает новый гаджет", "Он временно выбывает из боя", "Он становится быстрее", "Он меняет команду"],
+        answer: "Б"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "В каком режиме нужно забить мяч в ворота противника?",
+        options: ["Броулбол", "Награда за поимку", "Ограбление", "Горячая зона"],
+        answer: "А"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Что даёт Супер бойца?",
+        options: ["Особую сильную способность", "Новый скин", "Случайного бойца", "Автоматическую победу"],
+        answer: "А"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Что такое гаджет?",
+        options: ["Одноразовая или ограниченная активная способность бойца", "Название карты", "Вид внутриигровой валюты", "Уровень редкости"],
+        answer: "А"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Какая цель в режиме «Ограбление»?",
+        options: ["Собрать 10 кристаллов", "Уничтожить сейф противника", "Продержаться 2 минуты", "Захватить мяч"],
+        answer: "Б"
+      },
+      {
+        points: 3,
+        type: "choice",
+        text: "Что обычно улучшается при повышении уровня бойца?",
+        options: ["Характеристики бойца", "Цвет ника", "Название клуба", "Размер карты"],
+        answer: "А"
+      },
+      {
+        level: "Уровень 2. Сложный",
+        points: 4,
+        type: "choice",
+        text: "Какой бравлер является стартовым и доступен игроку с самого начала игры?",
+        options: ["Кольт", "Шелли", "Брок", "Нита"],
+        answer: "Б"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Какая строка полностью состоит из бравлеров редкости “Редкий”?",
+        options: ["Кольт, Брок, Барли", "Джесси, Рико, Динамайк", "Спайк, Леон, Ворон", "Мортис, Тара, Джин"],
+        answer: "А"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Кто из этих бравлеров НЕ относится к редкости “Редкий”?",
+        options: ["Булл", "Поко", "Роза", "Джесси"],
+        answer: "Г"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Какая строка полностью состоит из бравлеров редкости “Сверхредкий”?",
+        options: ["Рико, Джесси, Динамайк", "Брок, Барли, Нита", "Пайпер, Пэм, Фрэнк", "Мортис, Макс, Тара"],
+        answer: "А"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Кто из этих бравлеров относится к редкости “Эпический”?",
+        options: ["Гром", "Леон", "Дэмиан", "Кадзэ"],
+        answer: "А"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Какая строка полностью состоит из бравлеров редкости “Мифический”?",
+        options: ["Мортис, Тара, Джин", "Спайк, Ворон, Леон", "Кольт, Булл, Брок", "Рико, Пенни, Карл"],
+        answer: "А"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Какой бравлер является последним добавленным в актуальном списке Brawlify?",
+        options: ["Дэмиан", "Старр Нова", "Болт", "Сириус"],
+        answer: "В"
+      },
+      {
+        points: 4,
+        type: "choice",
+        text: "Какая редкость у Кадзэ и Сириуса?",
+        options: ["Легендарная", "Мифическая", "Эпическая", "Ультра-легендарная"],
+        answer: "Г"
+      },
+      {
+        level: "Уровень 3. Максимальная сложность",
+        points: 5,
+        type: "text",
+        text: "Как называется приём, когда игрок специально провоцирует врага пойти за ним и попасть в невыгодную ситуацию?",
+        answers: ["байт", "провокация", "приманка", "выманивание", "заманивание", "bait"]
+      },
+      {
+        points: 5,
+        type: "text",
+        text: "Как называется выбор бравлера против конкретного вражеского бравлера?",
+        answers: ["контрпик", "контра", "контр", "антипик", "пик против", "counter pick", "counterpick"]
+      },
+      {
+        points: 5,
+        type: "text",
+        text: "Как называется давление на врага с боковой линии карты?",
+        answers: ["фланг", "фланговое давление", "давление с фланга", "боковой заход", "заход сбоку", "обход"]
+      },
+      {
+        points: 5,
+        type: "text",
+        text: "Как называется ситуация, когда команда временно имеет больше живых игроков, например 3 против 2?",
+        answers: ["численное преимущество", "преимущество по игрокам", "3 в 2", "3в2", "три на два", "три против два", "больше игроков", "перевес"]
+      },
+      {
+        points: 6,
+        type: "text",
+        text: "Как называется правильный момент для использования Супера или гаджета?",
+        answers: ["тайминг", "правильный тайминг", "момент", "нужный момент", "удачный момент", "timing"]
+      },
+      {
+        points: 6,
+        type: "text",
+        text: "Как называется ситуация, когда врага зажимают с двух сторон?",
+        answers: ["зажим", "пинч", "pinch", "зажали", "зажатие", "зажим с двух сторон", "окружение"]
+      },
+      {
+        points: 6,
+        type: "text",
+        text: "Как называется ошибка, когда игрок один выходит против всей команды и быстро погибает?",
+        answers: ["соло выход", "фид", "зафидил", "слился", "отдался", "пошёл один", "пошел один", "один в троих", "1 в 3", "1в3", "раш в соло"]
+      },
+      {
+        points: 6,
+        type: "text",
+        text: "Как называется контроль боковых проходов, чтобы враг не смог спокойно обойти команду?",
+        answers: ["контроль флангов", "контроль боков", "контроль проходов", "держать фланги", "закрыть фланги", "контроль боковых линий"]
+      },
+      {
+        points: 0,
+        type: "text",
+        text: "Какой бравлер в Brawl Stars, по твоему мнению, самый ненавистный или раздражающий?",
+        answers: []
+      }
+    ];
+
+    const letters = ["А", "Б", "В", "Г"];
+    const questionsContainer = document.getElementById("questionsContainer");
+
+    questions.forEach((question, index) => {
+      if (question.level) {
+        const levelTitle = document.createElement("h2");
+        levelTitle.className = "level-title";
+        levelTitle.textContent = question.level;
+        questionsContainer.appendChild(levelTitle);
+      }
+
+      const block = document.createElement("div");
+      block.className = "question-block";
+
+      const title = document.createElement("h3");
+      title.textContent = `${index + 1}. ${question.text}`;
+      block.appendChild(title);
+
+      if (question.type === "choice") {
+        question.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          label.className = "answer-option";
+
+          label.innerHTML = `
+            <input type="radio" name="q${index}" value="${letters[optionIndex]}">
+            <span>${letters[optionIndex]}) ${option}</span>
+          `;
+
+          block.appendChild(label);
+        });
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.name = `q${index}`;
+        textarea.placeholder = "Введите ответ...";
+        textarea.rows = 4;
+        block.appendChild(textarea);
+      }
+
+      questionsContainer.appendChild(block);
+    });
+
+    const timerElement = document.getElementById("timer");
+    const examDuration = 40 * 60 * 1000;
+
+    let examFinished = false;
+    let antiCheatEnabled = false;
+    let resultAlreadySent = false;
+    let timerInterval = null;
+    let antiCheatInterval = null;
+
+    setTimeout(function() {
+      antiCheatEnabled = true;
+    }, 2500);
+
+    timerInterval = setInterval(updateTimer, 1000);
+    antiCheatInterval = setInterval(checkAntiCheat, 300);
+
+    updateTimer();
+
+    document.getElementById("examForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      finishExam(false);
+    });
+
+    document.addEventListener("visibilitychange", checkAntiCheat);
+    window.addEventListener("blur", checkAntiCheat);
+
+    window.addEventListener("pagehide", function() {
+      if (!examFinished && antiCheatEnabled) {
+        sendDeletedOnUnload();
+      }
+    });
+
+    function checkAntiCheat() {
+      if (examFinished || !antiCheatEnabled) return;
+
+      const tabIsHidden = document.hidden || document.visibilityState !== "visible";
+      const windowIsNotFocused = !document.hasFocus();
+
+      if (tabIsHidden) {
+        failExam("Вы свернули вкладку или перешли на другую вкладку");
+        return;
+      }
+
+      if (windowIsNotFocused) {
+        failExam("Вы покинули окно экзамена");
+      }
+    }
+
+    function updateTimer() {
+      const now = Date.now();
+      const passedTime = now - startTime;
+      const remainingTime = examDuration - passedTime;
+
+      if (remainingTime <= 0) {
+        timerElement.textContent = "00:00";
+        finishExam(true);
+        return;
+      }
+
+      const minutes = Math.floor(remainingTime / 1000 / 60);
+      const seconds = Math.floor((remainingTime / 1000) % 60);
+
+      timerElement.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+    }
+
+    function normalizeAnswer(text) {
+      return text
+        .toLowerCase()
+        .replaceAll("ё", "е")
+        .replace(/[.,!?;:]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function stopExamSystems() {
+      antiCheatEnabled = false;
+
+      if (timerInterval) clearInterval(timerInterval);
+      if (antiCheatInterval) clearInterval(antiCheatInterval);
+    }
+
+    function finishExam(timeIsOver) {
+      if (examFinished) return;
+
+      examFinished = true;
+      stopExamSystems();
+
+      let autoScore = 0;
+      let autoMaxScore = 0;
+      const answers = [];
+
+      questions.forEach((question, index) => {
+        let userAnswer = "";
+
+        if (question.type === "choice") {
+          autoMaxScore += question.points;
+
+          const checked = document.querySelector(`input[name="q${index}"]:checked`);
+          userAnswer = checked ? checked.value : "";
+
+          if (userAnswer === question.answer) {
+            autoScore += question.points;
+          }
+        } else {
+          const textarea = document.querySelector(`textarea[name="q${index}"]`);
+          userAnswer = textarea ? textarea.value.trim() : "";
+
+          if (question.points > 0) {
+            autoMaxScore += question.points;
+
+            const normalizedUserAnswer = normalizeAnswer(userAnswer);
+            const correctAnswers = question.answers.map(answer => normalizeAnswer(answer));
+
+            if (correctAnswers.includes(normalizedUserAnswer)) {
+              autoScore += question.points;
+            }
+          }
+        }
+
+        answers.push({
+          question: index + 1,
+          answer: userAnswer,
+          points: question.points
+        });
+      });
+
+      const result = {
+        user: userData,
+        score: autoScore,
+        maxScore: autoMaxScore,
+        answers: answers,
+        finishedAt: new Date().toLocaleString("ru-RU")
+      };
+
+      localStorage.setItem("brawlExamResult", JSON.stringify(result));
+
+      sendResultToGoogleSheets(result, function(response) {
+        if (response && response.status === "duplicate") {
+          showDuplicateResult(response);
+          return;
+        }
+
+        showResult(timeIsOver, autoScore, autoMaxScore);
+      });
+    }
+
+    function failExam(reason) {
+      if (examFinished || !antiCheatEnabled) return;
+
+      examFinished = true;
+      stopExamSystems();
+
+      localStorage.setItem("brawlExamViolation", reason);
+
+      const result = {
+        user: userData,
+        score: "Удален",
+        maxScore: "100",
+        answers: [],
+        reason: reason,
+        finishedAt: new Date().toLocaleString("ru-RU")
+      };
+
+      localStorage.setItem("brawlExamResult", JSON.stringify(result));
+
+      sendResultToGoogleSheets(result, function(response) {
+        if (response && response.status === "duplicate") {
+          showDuplicateResult(response);
+          return;
+        }
+
+        showFailResult(reason);
+      });
+    }
+
+    function showResult(timeIsOver, autoScore, autoMaxScore) {
+      document.getElementById("examForm").style.display = "none";
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.classList.remove("hidden");
+
+      resultBox.innerHTML = `
+        <h2>${timeIsOver ? "Время вышло!" : "Экзамен завершён!"}</h2>
+        <p><b>Фамилия Имя:</b> ${userData.fullName}</p>
+        <p><b>Возраст:</b> ${userData.age}</p>
+        <p><b>Supercell ID:</b> ${userData.supercellId}</p>
+        <p><b>Telegram:</b> ${userData.telegram}</p>
+        <p><b>Результат:</b> ${autoScore} из ${autoMaxScore} баллов</p>
+        <p class="small-text">Результат отправлен.</p>
+      `;
+
+      localStorage.removeItem("brawlExamStartTime");
+    }
+
+    function showFailResult(reason) {
+      document.getElementById("examForm").style.display = "none";
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.classList.remove("hidden");
+
+      resultBox.innerHTML = `
+        <h2>Экзамен аннулирован</h2>
+        <p><b>Причина:</b> ${reason}</p>
+        <p><b>Результат:</b> Удален</p>
+        <p class="small-text">Нарушение зафиксировано. Результат отправлен.</p>
+      `;
+
+      localStorage.removeItem("brawlExamStartTime");
+    }
+
+    function showDuplicateResult(response) {
+      document.getElementById("examForm").style.display = "none";
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.classList.remove("hidden");
+
+      let oldResultText = "";
+
+      if (response && String(response.oldScore).toLowerCase() === "удален") {
+        oldResultText = "Удален";
+      } else if (response && response.oldScore !== undefined) {
+        oldResultText = `${response.oldScore} из ${response.oldMaxScore || 100} баллов`;
+      } else {
+        oldResultText = "уже сохранён ранее";
+      }
+
+      resultBox.innerHTML = `
+        <h2>Повторная попытка не засчитана</h2>
+        <p>Система обнаружила, что экзамен уже был пройден ранее.</p>
+        <p>По правилам экзамен можно пройти только один раз.</p>
+        <p><b>Будет сохранён ваш старый результат: ${oldResultText}</b></p>
+        <p><b>Новая попытка не принимается к зачёту.</b></p>
+        <p class="small-text">Если вы считаете, что произошла ошибка, обратитесь к организатору экзамена.</p>
+      `;
+
+      localStorage.removeItem("brawlExamStartTime");
+    }
+
+    function buildSendUrl(result, callbackName) {
+      const params = new URLSearchParams({
+        save: "1",
+        fullName: result.user.fullName || "",
+        age: result.user.age || "",
+        supercellId: result.user.supercellId || "",
+        telegram: result.user.telegram || "",
+        score: String(result.score),
+        maxScore: String(result.maxScore),
+        time: String(Date.now())
+      });
+
+      if (callbackName) {
+        params.append("callback", callbackName);
+      }
+
+      return GOOGLE_SCRIPT_URL + "?" + params.toString();
+    }
+
+    function sendResultToGoogleSheets(result, callback) {
+      if (resultAlreadySent) {
+        callback({ status: "already_sent" });
+        return;
+      }
+
+      resultAlreadySent = true;
+
+      const callbackName =
+        "googleSheetsCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+
+      const sendUrl = buildSendUrl(result, callbackName);
+
+      console.log("Ссылка отправки:", sendUrl);
+
+      let requestFinished = false;
+
+      const script = document.createElement("script");
+
+      window[callbackName] = function(response) {
+        if (requestFinished) return;
+
+        requestFinished = true;
+
+        delete window[callbackName];
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+
+        callback(response || { status: "unknown" });
+      };
+
+      script.src = sendUrl;
+
+      script.onerror = function() {
+        if (requestFinished) return;
+
+        requestFinished = true;
+
+        delete window[callbackName];
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+
+        callback({ status: "error" });
+      };
+
+      document.body.appendChild(script);
+
+      setTimeout(function() {
+        if (requestFinished) return;
+
+        requestFinished = true;
+
+        delete window[callbackName];
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+
+        callback({ status: "timeout" });
+      }, 8000);
+    }
+
+    function sendDeletedOnUnload() {
+      if (resultAlreadySent) return;
+
+      resultAlreadySent = true;
+
+      const result = {
+        user: userData,
+        score: "Удален",
+        maxScore: "100",
+        answers: [],
+        reason: "Страница была закрыта или покинута",
+        finishedAt: new Date().toLocaleString("ru-RU")
+      };
+
+      localStorage.setItem("brawlExamViolation", result.reason);
+      localStorage.setItem("brawlExamResult", JSON.stringify(result));
+      localStorage.removeItem("brawlExamStartTime");
+
+      const sendUrl = buildSendUrl(result, "");
+
+      try {
+        fetch(sendUrl, {
+          method: "GET",
+          mode: "no-cors",
+          keepalive: true
+        });
+      } catch (error) {
+        console.log("Не удалось отправить при закрытии:", error);
+      }
+    }
+  </script>
+
+</body>
+</html>

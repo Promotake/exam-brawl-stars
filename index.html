@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Регистрация | Экзамен по Brawl Stars</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .rules-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .rules-overlay.active {
+      display: flex;
+    }
+
+    .rules-modal {
+      width: 100%;
+      max-width: 620px;
+      background: linear-gradient(135deg, #3b235c, #6d2f70);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+      border: 2px solid rgba(255, 214, 10, 0.45);
+      color: #fff;
+      animation: modalShow 0.25s ease;
+    }
+
+    @keyframes modalShow {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .rules-modal h2 {
+      text-align: center;
+      color: #ffd60a;
+      font-size: 28px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .rules-subtitle {
+      text-align: center;
+      color: #e8e8e8;
+      margin-bottom: 24px;
+      font-size: 16px;
+    }
+
+    .rules-list {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .rules-list p {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .rules-warning {
+      color: #ffd60a;
+      font-weight: bold;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .rules-check {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .rules-check input {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .rules-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .rules-buttons button {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .rules-cancel {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .rules-cancel:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .rules-ok:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 520px) {
+      .rules-modal {
+        padding: 24px;
+      }
+
+      .rules-modal h2 {
+        font-size: 22px;
+      }
+
+      .rules-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <h1>Экзамен по Brawl Stars</h1>
+      <p class="subtitle">Заполни данные перед началом экзамена</p>
+
+      <form id="registerForm">
+        <label>
+          Фамилия Имя
+          <input type="text" id="fullName" placeholder="Введите фамилию и имя" required />
+        </label>
+
+        <label>
+          Возраст
+          <input type="number" id="age" placeholder="Введите возраст" required min="1" />
+        </label>
+
+        <label>
+          Supercell ID
+          <input type="text" id="supercellId" placeholder="Введите Supercell ID" required />
+        </label>
+
+        <label>
+          Ваш Telegram username
+          <input type="text" id="telegram" placeholder="@username" required />
+        </label>
+
+        <label class="checkbox">
+          <input type="checkbox" id="consent" required />
+          <span>Я согласен на обработку персональных данных</span>
+        </label>
+
+        <button type="submit">Начать экзамен</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="rules-overlay" id="rulesOverlay">
+    <div class="rules-modal">
+      <h2>Внимание</h2>
+      <p class="rules-subtitle">Правила проведения экзамена</p>
+
+      <div class="rules-list">
+        <p>1. На прохождение экзамена даётся 40 минут.</p>
+        <p>2. Нельзя сворачивать вкладку с экзаменом.</p>
+        <p>3. Нельзя переходить в другие окна, программы или вкладки.</p>
+        <p>4. Нельзя закрывать или обновлять страницу до завершения экзамена.</p>
+        <p>5. Нельзя пользоваться поиском, подсказками и сторонними материалами.</p>
+        <p>6. Экзамен можно пройти только один раз.</p>
+        <p>7. Повторное прохождение экзамена автоматически фиксируется системой и не засчитывается.</p>
+        <p>8. При нарушении правил экзамен автоматически аннулируется.</p>
+
+        <p class="rules-warning">
+          Система фиксирует нарушения и повторные попытки. В таком случае результат экзамена будет аннулирован.
+        </p>
+      </div>
+
+      <label class="rules-check">
+        <input type="checkbox" id="rulesAccepted" />
+        <span>Я ознакомился с правилами проведения экзамена</span>
+      </label>
+
+      <div class="rules-buttons">
+        <button type="button" class="rules-cancel" id="cancelRulesBtn">Отмена</button>
+        <button type="button" class="rules-ok" id="startExamBtn" disabled>ОК, начать экзамен</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const rulesOverlay = document.getElementById("rulesOverlay");
+    const rulesAccepted = document.getElementById("rulesAccepted");
+    const startExamBtn = document.getElementById("startExamBtn");
+    const cancelRulesBtn = document.getElementById("cancelRulesBtn");
+    const telegramInput = document.getElementById("telegram");
+
+    let savedUserData = null;
+
+    telegramInput.addEventListener("focus", function() {
+      if (!telegramInput.value.trim()) {
+        telegramInput.value = "@";
+      }
+    });
+
+    telegramInput.addEventListener("input", function() {
+      let value = telegramInput.value;
+
+      value = value.replace(/\s/g, "");
+      value = value.replace(/@+/g, "");
+
+      telegramInput.value = value ? "@" + value : "@";
+    });
+
+    telegramInput.addEventListener("blur", function() {
+      if (telegramInput.value === "@") {
+        telegramInput.value = "";
+      } else {
+        telegramInput.value = normalizeTelegramInput(telegramInput.value);
+      }
+    });
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      savedUserData = {
+        fullName: document.getElementById("fullName").value.trim(),
+        age: document.getElementById("age").value.trim(),
+        supercellId: document.getElementById("supercellId").value.trim(),
+        telegram: normalizeTelegramInput(document.getElementById("telegram").value)
+      };
+
+      rulesAccepted.checked = false;
+      startExamBtn.disabled = true;
+      rulesOverlay.classList.add("active");
+    });
+
+    rulesAccepted.addEventListener("change", function() {
+      startExamBtn.disabled = !rulesAccepted.checked;
+    });
+
+    cancelRulesBtn.addEventListener("click", function() {
+      rulesOverlay.classList.remove("active");
+    });
+
+    startExamBtn.addEventListener("click", function() {
+      if (!rulesAccepted.checked || !savedUserData) {
+        return;
+      }
+
+      localStorage.setItem("brawlExamUser", JSON.stringify(savedUserData));
+      localStorage.setItem("brawlExamStartTime", Date.now());
+      localStorage.removeItem("brawlExamResult");
+      localStorage.removeItem("brawlExamViolation");
+
+      window.location.href = "exam.html";
+    });
+
+    function normalizeTelegramInput(value) {
+      value = value.trim().replace(/\s/g, "").replace(/@+/g, "");
+
+      if (!value) {
+        return "";
+      }
+
+      return "@" + value;
+    }
+  </script>
+
+</body>
+</html>
