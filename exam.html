@@ -356,6 +356,7 @@
 
       questions.forEach((question, index) => {
         let userAnswer = "";
+        let isCorrect = null;
 
         if (question.type === "choice") {
           autoMaxScore += question.points;
@@ -365,6 +366,9 @@
 
           if (userAnswer === question.answer) {
             autoScore += question.points;
+            isCorrect = true;
+          } else {
+            isCorrect = false;
           }
         } else {
           const textarea = document.querySelector(`textarea[name="q${index}"]`);
@@ -378,13 +382,19 @@
 
             if (correctAnswers.includes(normalizedUserAnswer)) {
               autoScore += question.points;
+              isCorrect = true;
+            } else {
+              isCorrect = false;
             }
+          } else {
+            isCorrect = null;
           }
         }
 
         answers.push({
           question: index + 1,
           answer: userAnswer,
+          correct: isCorrect,
           points: question.points
         });
       });
@@ -529,6 +539,7 @@
         telegram: result.user.telegram || "",
         score: String(result.score),
         maxScore: String(result.maxScore),
+        answersJson: JSON.stringify(result.answers || []),
         time: String(Date.now())
       });
 
