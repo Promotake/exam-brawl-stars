@@ -8,133 +8,188 @@
 
   <style>
     .rules-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      padding: 20px;
-    }
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  overflow-y: auto;
+}
 
-    .rules-overlay.active {
-      display: flex;
-    }
+.rules-overlay.active {
+  display: flex;
+}
 
-    .rules-modal {
-      width: 100%;
-      max-width: 620px;
-      background: linear-gradient(135deg, #3b235c, #6d2f70);
-      border-radius: 24px;
-      padding: 32px;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
-      border: 2px solid rgba(255, 214, 10, 0.45);
-      color: #fff;
-      animation: modalShow 0.25s ease;
-    }
+.rules-modal {
+  width: 100%;
+  max-width: 620px;
+  max-height: calc(100dvh - 40px);
+  background: linear-gradient(135deg, #3b235c, #6d2f70);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+  border: 2px solid rgba(255, 214, 10, 0.45);
+  color: #fff;
+  animation: modalShow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-    @keyframes modalShow {
-      from {
-        opacity: 0;
-        transform: scale(0.92) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
+@keyframes modalShow {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
 
-    .rules-modal h2 {
-      text-align: center;
-      color: #ffd60a;
-      font-size: 28px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
+.rules-modal h2 {
+  text-align: center;
+  color: #ffd60a;
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
 
-    .rules-subtitle {
-      text-align: center;
-      color: #e8e8e8;
-      margin-bottom: 24px;
-      font-size: 16px;
-    }
+.rules-subtitle {
+  text-align: center;
+  color: #e8e8e8;
+  margin-bottom: 20px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
 
-    .rules-list {
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
+.rules-list {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+  overflow-y: auto;
+  flex: 1;
+}
 
-    .rules-list p {
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
+.rules-list p {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
 
-    .rules-warning {
-      color: #ffd60a;
-      font-weight: bold;
-      margin-top: 14px;
-      text-align: center;
-    }
+.rules-warning {
+  color: #ffd60a;
+  font-weight: bold;
+  margin-top: 14px;
+  text-align: center;
+}
 
-    .rules-check {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 12px;
-      margin: 18px 0;
-      font-size: 15px;
-      cursor: pointer;
-    }
+.rules-check {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 14px 0;
+  font-size: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
 
-    .rules-check input {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
+.rules-check input {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  cursor: pointer;
+  margin-top: 2px;
+}
 
-    .rules-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
+.rules-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-shrink: 0;
+}
 
-    .rules-buttons button {
-      flex: 1;
-      margin-top: 0;
-    }
+.rules-buttons button {
+  flex: 1;
+  margin-top: 0;
+}
 
-    .rules-cancel {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
+.rules-cancel {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
 
-    .rules-cancel:hover {
-      background: rgba(255, 255, 255, 0.28);
-    }
+.rules-cancel:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
 
-    .rules-ok:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
+.rules-ok:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
 
-    @media (max-width: 520px) {
-      .rules-modal {
-        padding: 24px;
-      }
+/* Телефоны */
+@media (max-width: 520px) {
+  .rules-overlay {
+    align-items: flex-start;
+    padding: 10px;
+  }
 
-      .rules-modal h2 {
-        font-size: 22px;
-      }
+  .rules-modal {
+    max-height: calc(100dvh - 20px);
+    padding: 18px;
+    border-radius: 18px;
+  }
 
-      .rules-buttons {
-        flex-direction: column;
-      }
-    }
+  .rules-modal h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .rules-subtitle {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .rules-list {
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    line-height: 1.45;
+  }
+
+  .rules-list p {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .rules-warning {
+    font-size: 14px;
+  }
+
+  .rules-check {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .rules-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rules-buttons button {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
   </style>
 </head>
 <body>
