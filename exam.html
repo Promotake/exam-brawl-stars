@@ -14,7 +14,7 @@
 
       <div class="timer-box">
         Осталось времени:
-        <span id="timer">40:00</span>
+        <span id="timer">25:00</span>
       </div>
 
       <p class="subtitle" id="userInfo"></p>
@@ -41,7 +41,7 @@
     }
 
     document.getElementById("userInfo").textContent =
-      `Участник: ${userData.fullName} | Supercell ID: ${userData.supercellId} | Telegram: ${userData.telegram}`;
+      `Участник: ${userData.fullName} | Игровой ник: ${userData.supercellId} | Telegram: ${userData.telegram}`;
 
     const questions = [
       {
@@ -178,7 +178,7 @@
         points: 5,
         type: "text",
         text: "Как называется давление на врага с боковой линии карты?",
-        answers: ["фланг", "фланговое давление", "давление с фланга", "боковой заход", "заход сбоку", "обход", "фланговое"]
+        answers: ["фланг", "фланговое давление", "давление с фланга", "боковой заход", "заход сбоку", "обход"]
       },
       {
         points: 5,
@@ -278,6 +278,13 @@
 
     let certificateScore = null;
     let certificateMaxScore = null;
+
+    let certificateUserData = {
+      fullName: userData.fullName,
+      age: userData.age,
+      supercellId: userData.supercellId,
+      telegram: userData.telegram
+    };
 
     setTimeout(function() {
       antiCheatEnabled = true;
@@ -419,6 +426,13 @@
       certificateScore = autoScore;
       certificateMaxScore = autoMaxScore;
 
+      certificateUserData = {
+        fullName: userData.fullName,
+        age: userData.age,
+        supercellId: userData.supercellId,
+        telegram: userData.telegram
+      };
+
       localStorage.setItem("brawlExamResult", JSON.stringify(result));
 
       sendResultToGoogleSheets(result, function(response) {
@@ -470,7 +484,7 @@
         <h2>${timeIsOver ? "Время вышло!" : "Экзамен завершён!"}</h2>
         <p><b>Фамилия Имя:</b> ${userData.fullName}</p>
         <p><b>Возраст:</b> ${userData.age}</p>
-        <p><b>Supercell ID:</b> ${userData.supercellId}</p>
+        <p><b>Игровой ник:</b> ${userData.supercellId}</p>
         <p><b>Telegram:</b> ${userData.telegram}</p>
         <p><b>Результат:</b> ${autoScore} из ${autoMaxScore} баллов</p>
         <p class="small-text">Результат отправлен.</p>
@@ -516,6 +530,14 @@
 
         certificateScore = response.oldScore;
         certificateMaxScore = response.oldMaxScore || 100;
+
+        certificateUserData = {
+          fullName: response.oldFullName || userData.fullName,
+          age: response.oldAge || userData.age,
+          supercellId: response.oldGameNick || userData.supercellId,
+          telegram: response.oldTelegram || userData.telegram
+        };
+
         canDownloadOldCertificate = true;
       } else {
         oldResultText = "уже сохранён ранее";
@@ -696,7 +718,7 @@
 
       drawAdaptiveText(
         ctx,
-        userData.fullName || "Участник",
+        certificateUserData.fullName || "Участник",
         width / 2,
         height * 0.50,
         width * 0.62,
@@ -715,7 +737,7 @@
       ctx.textAlign = "left";
       ctx.font = "bold 28px Arial";
       ctx.fillText(
-        userData.telegram || "@username",
+        certificateUserData.telegram || "@username",
         width * 0.25,
         height * 0.865
       );
@@ -733,7 +755,7 @@
     }
 
     function makeCertificateFileName() {
-      const name = (userData.fullName || "certificate")
+      const name = (certificateUserData.fullName || "certificate")
         .replace(/[^\p{L}\p{N}_-]+/gu, "_")
         .replace(/_+/g, "_");
 
