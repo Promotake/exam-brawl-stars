@@ -1,346 +1,511 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Регистрация | Экзамен по Brawl Stars</title>
-  <link rel="stylesheet" href="style.css" />
+  <!DOCTYPE html>
+  <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Регистрация | Экзамен по Brawl Stars</title>
+    <link rel="stylesheet" href="style.css" />
 
-  <style>
-    .rules-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .rules-overlay.active {
-      display: flex;
-    }
-
-    .rules-modal {
-      width: 100%;
-      max-width: 620px;
-      max-height: calc(100dvh - 40px);
-      background: linear-gradient(135deg, #3b235c, #6d2f70);
-      border-radius: 24px;
-      padding: 32px;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
-      border: 2px solid rgba(255, 214, 10, 0.45);
-      color: #fff;
-      animation: modalShow 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    @keyframes modalShow {
-      from {
-        opacity: 0;
-        transform: scale(0.92) translateY(20px);
+    <style>
+      .start-page {
+        align-items: center;
+        justify-content: center;
+        padding-top: 24px;
+        padding-bottom: 24px;
       }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
+
+      .start-card {
+        max-width: 540px;
+        padding: 28px;
       }
-    }
 
-    .rules-modal h2 {
-      text-align: center;
-      color: #ffd60a;
-      font-size: 28px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
+      .official-header {
+        margin-bottom: 24px;
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 214, 10, 0.45);
+      }
 
-    .rules-subtitle {
-      text-align: center;
-      color: #e8e8e8;
-      margin-bottom: 20px;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
+      .official-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
 
-    .rules-list {
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 18px;
-      line-height: 1.6;
-      overflow-y: auto;
-      flex: 1;
-    }
+      .official-brand {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
 
-    .rules-list p {
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
+      .official-cross,
+      .official-year {
+        color: #ffd60a;
+      }
 
-    .rules-warning {
-      color: #ffd60a;
-      font-weight: bold;
-      margin-top: 14px;
-      text-align: center;
-    }
+      .official-stamp {
+        padding: 6px 10px;
+        border: 2px solid #ffd60a;
+        color: #ffd60a;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transform: rotate(-2deg);
+        white-space: nowrap;
+      }
 
-    .rules-check {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 12px;
-      margin: 14px 0;
-      font-size: 15px;
-      cursor: pointer;
-      flex-shrink: 0;
-      line-height: 1.4;
-    }
+      .official-divider {
+        height: 2px;
+        margin: 14px 0;
+        background: linear-gradient(90deg, transparent, #ffd60a, transparent);
+      }
 
-    .rules-check input {
-      width: 20px;
-      height: 20px;
-      min-width: 20px;
-      cursor: pointer;
-      margin-top: 2px;
-    }
+      .main-title {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 30px;
+        line-height: 1.15;
+        text-transform: uppercase;
+      }
 
-    .rules-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 12px;
-      flex-shrink: 0;
-    }
+      .prize-info {
+        margin: 18px 0 24px;
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(255, 214, 10, 0.16);
+        border: 1px solid rgba(255, 214, 10, 0.45);
+        text-align: center;
+        line-height: 1.5;
+        color: #fff;
+        font-size: 15px;
+      }
 
-    .rules-buttons button {
-      flex: 1;
-      margin-top: 0;
-    }
+      .prize-info b {
+        color: #ffd60a;
+      }
 
-    .rules-cancel {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
+      .prize-icon {
+        width: 24px;
+        height: auto;
+        vertical-align: middle;
+        margin-right: 6px;
+        display: inline-block;
+      }
 
-    .rules-cancel:hover {
-      background: rgba(255, 255, 255, 0.28);
-    }
+      .form-title {
+        text-align: center;
+        margin-bottom: 18px;
+        color: #f1f1f1;
+        font-size: 15px;
+      }
 
-    .rules-ok:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    @media (max-width: 520px) {
       .rules-overlay {
-        align-items: flex-start;
-        padding: 10px;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.72);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .rules-overlay.active {
+        display: flex;
       }
 
       .rules-modal {
-        max-height: calc(100dvh - 20px);
-        padding: 18px;
-        border-radius: 18px;
+        width: 100%;
+        max-width: 620px;
+        max-height: calc(100dvh - 40px);
+        background: linear-gradient(135deg, #3b235c, #6d2f70);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+        border: 2px solid rgba(255, 214, 10, 0.45);
+        color: #fff;
+        animation: modalShow 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      @keyframes modalShow {
+        from {
+          opacity: 0;
+          transform: scale(0.92) translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
       }
 
       .rules-modal h2 {
-        font-size: 22px;
-        margin-bottom: 6px;
+        text-align: center;
+        color: #ffd60a;
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        flex-shrink: 0;
       }
 
       .rules-subtitle {
-        font-size: 14px;
-        margin-bottom: 12px;
+        text-align: center;
+        color: #e8e8e8;
+        margin-bottom: 20px;
+        font-size: 16px;
+        flex-shrink: 0;
       }
 
       .rules-list {
-        padding: 14px;
-        border-radius: 14px;
-        margin-bottom: 12px;
-        line-height: 1.45;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 18px;
+        line-height: 1.6;
+        overflow-y: auto;
+        flex: 1;
       }
 
       .rules-list p {
-        font-size: 14px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        font-size: 16px;
       }
 
       .rules-warning {
-        font-size: 14px;
+        color: #ffd60a;
+        font-weight: bold;
+        margin-top: 14px;
+        text-align: center;
       }
 
       .rules-check {
-        font-size: 14px;
-        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 14px 0;
+        font-size: 15px;
+        cursor: pointer;
+        flex-shrink: 0;
+        line-height: 1.4;
+      }
+
+      .rules-check input {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        cursor: pointer;
+        margin-top: 2px;
       }
 
       .rules-buttons {
-        flex-direction: column;
-        gap: 8px;
+        display: flex;
+        gap: 12px;
+        margin-top: 12px;
+        flex-shrink: 0;
       }
 
       .rules-buttons button {
-        padding: 12px;
-        font-size: 15px;
+        flex: 1;
+        margin-top: 0;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <div class="container">
-    <div class="card">
-      <h1>Экзамен по Brawl Stars</h1>
-      <p class="subtitle">Заполни данные перед началом экзамена</p>
+      .rules-cancel {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+      }
 
-      <form id="registerForm">
-        <label>
-          Фамилия Имя
-          <input type="text" id="fullName" placeholder="Введите фамилию и имя" required />
-        </label>
+      .rules-cancel:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
 
-        <label>
-          Возраст
-          <input type="number" id="age" placeholder="Введите возраст" required min="1" />
-        </label>
+      .rules-ok:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
 
-        <label>
-          Игровой ник в Brawl Stars или Supercell
-          <input type="text" id="supercellId" placeholder="Введите игровой ник или Supercell" required />
-        </label>
+      @media (max-width: 520px) {
+        .start-page {
+          padding: 12px;
+        }
 
-        <label>
-          Ваш Telegram username
-          <input type="text" id="telegram" placeholder="@username" required />
-        </label>
+        .start-card {
+          padding: 18px;
+        }
 
-        <label class="checkbox">
-          <input type="checkbox" id="consent" required />
-          <span>Я согласен на обработку персональных данных</span>
-        </label>
+        .official-header {
+          padding: 14px;
+          border-radius: 16px;
+        }
 
-        <button type="submit">Начать экзамен</button>
-      </form>
-    </div>
-  </div>
+        .official-top {
+          align-items: flex-start;
+        }
 
-  <div class="rules-overlay" id="rulesOverlay">
-    <div class="rules-modal">
-      <h2>Внимание</h2>
-      <p class="rules-subtitle">Правила проведения экзамена</p>
+        .official-brand {
+          font-size: 12px;
+          letter-spacing: 1px;
+        }
 
-      <div class="rules-list">
-        <p>1. На прохождение экзамена даётся 25 минут.</p>
-        <p>2. Нельзя сворачивать вкладку с экзаменом.</p>
-        <p>3. Нельзя переходить в другие окна, программы или вкладки.</p>
-        <p>4. Нельзя закрывать или обновлять страницу до завершения экзамена.</p>
-        <p>5. Нельзя пользоваться поиском, подсказками и сторонними материалами.</p>
-        <p>6. Экзамен можно пройти только один раз.</p>
-        <p>7. Будут учитываться только попытки, в которых указан действующий Telegram username.</p>
-        <p>8. Повторное прохождение экзамена автоматически фиксируется системой и не засчитывается.</p>
-        <p>9. При нарушении правил экзамен автоматически аннулируется.</p>
+        .official-stamp {
+          font-size: 10px;
+          padding: 5px 8px;
+        }
 
-        <p class="rules-warning">
-          Система фиксирует нарушения и повторные попытки. В таком случае результат экзамена будет аннулирован.
-        </p>
+        .main-title {
+          font-size: 24px;
+        }
+
+        .prize-info {
+          font-size: 14px;
+          padding: 13px;
+        }
+
+        .prize-icon {
+          width: 24px;
+        }
+
+        .rules-overlay {
+          align-items: flex-start;
+          padding: 10px;
+        }
+
+        .rules-modal {
+          max-height: calc(100dvh - 20px);
+          padding: 18px;
+          border-radius: 18px;
+        }
+
+        .rules-modal h2 {
+          font-size: 22px;
+          margin-bottom: 6px;
+        }
+
+        .rules-subtitle {
+          font-size: 14px;
+          margin-bottom: 12px;
+        }
+
+        .rules-list {
+          padding: 14px;
+          border-radius: 14px;
+          margin-bottom: 12px;
+          line-height: 1.45;
+        }
+
+        .rules-list p {
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+
+        .rules-warning {
+          font-size: 14px;
+        }
+
+        .rules-check {
+          font-size: 14px;
+          margin: 10px 0;
+        }
+
+        .rules-buttons {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .rules-buttons button {
+          padding: 12px;
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container start-page">
+      <div class="card start-card">
+
+        <div class="official-header">
+          <div class="official-top">
+            <div class="official-brand">
+              <span>PROMOTAKE</span>
+              <span class="official-cross">×</span>
+              <span>ЭПБС</span>
+              <span class="official-year">2026</span>
+            </div>
+
+            <div class="official-stamp">Официально</div>
+          </div>
+
+          <div class="official-divider"></div>
+
+          <h1 class="main-title">Экзамен по Brawl Stars</h1>
+        </div>
+
+        <div class="prize-info">
+          <img src="bp.png" alt="Brawl Pass" class="prize-icon">
+          Участник, набравший больше всего баллов, получит приз:
+          <br>
+          <b>Brawl Pass или денежный подарок</b>
+        </div>
+
+        <p class="form-title">Заполни данные перед началом экзамена</p>
+
+        <form id="registerForm">
+          <label>
+            Фамилия Имя
+            <input type="text" id="fullName" placeholder="Введите фамилию и имя" required />
+          </label>
+
+          <label>
+            Возраст
+            <input type="number" id="age" placeholder="Введите возраст" required min="1" />
+          </label>
+
+          <label>
+            Игровой ник в Brawl Stars или Supercell
+            <input type="text" id="supercellId" placeholder="Введите игровой ник или Supercell" required />
+          </label>
+
+          <label>
+            Ваш Telegram username
+            <input type="text" id="telegram" placeholder="@username" required />
+          </label>
+
+          <label class="checkbox">
+            <input type="checkbox" id="consent" required />
+            <span>Я согласен на обработку персональных данных</span>
+          </label>
+
+          <button type="submit">Начать экзамен</button>
+        </form>
       </div>
+    </div>
 
-      <label class="rules-check">
-        <input type="checkbox" id="rulesAccepted" />
-        <span>Я ознакомился с правилами проведения экзамена</span>
-      </label>
+    <div class="rules-overlay" id="rulesOverlay">
+      <div class="rules-modal">
+        <h2>Внимание</h2>
+        <p class="rules-subtitle">Правила проведения экзамена</p>
 
-      <div class="rules-buttons">
-        <button type="button" class="rules-cancel" id="cancelRulesBtn">Отмена</button>
-        <button type="button" class="rules-ok" id="startExamBtn" disabled>ОК, начать экзамен</button>
+        <div class="rules-list">
+          <p>1. На прохождение экзамена даётся 15 минут.</p>
+          <p>2. Нельзя сворачивать вкладку с экзаменом.</p>
+          <p>3. Нельзя переходить в другие окна, программы или вкладки.</p>
+          <p>4. Нельзя закрывать или обновлять страницу до завершения экзамена.</p>
+          <p>5. Нельзя пользоваться поиском, подсказками и сторонними материалами.</p>
+          <p>6. Экзамен можно пройти только один раз.</p>
+          <p>7. Будут учитываться только попытки, в которых указан действующий Telegram username.</p>
+          <p>8. Повторное прохождение экзамена автоматически фиксируется системой и не засчитывается.</p>
+          <p>9. При нарушении правил экзамен автоматически аннулируется.</p>
+
+          <p class="rules-warning">
+            Указывайте действующий Telegram username. Система фиксирует нарушения и повторные попытки, такие результаты не засчитываются.
+          </p>
+        </div>
+
+        <label class="rules-check">
+          <input type="checkbox" id="rulesAccepted" />
+          <span>Я ознакомился с правилами проведения экзамена</span>
+        </label>
+
+        <div class="rules-buttons">
+          <button type="button" class="rules-cancel" id="cancelRulesBtn">Отмена</button>
+          <button type="button" class="rules-ok" id="startExamBtn" disabled>ОК, начать экзамен</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    const form = document.getElementById("registerForm");
-    const rulesOverlay = document.getElementById("rulesOverlay");
-    const rulesAccepted = document.getElementById("rulesAccepted");
-    const startExamBtn = document.getElementById("startExamBtn");
-    const cancelRulesBtn = document.getElementById("cancelRulesBtn");
-    const telegramInput = document.getElementById("telegram");
+    <script>
+      const form = document.getElementById("registerForm");
+      const rulesOverlay = document.getElementById("rulesOverlay");
+      const rulesAccepted = document.getElementById("rulesAccepted");
+      const startExamBtn = document.getElementById("startExamBtn");
+      const cancelRulesBtn = document.getElementById("cancelRulesBtn");
+      const telegramInput = document.getElementById("telegram");
 
-    let savedUserData = null;
+      let savedUserData = null;
 
-    telegramInput.addEventListener("focus", function() {
-      if (!telegramInput.value.trim()) {
-        telegramInput.value = "@";
+      telegramInput.addEventListener("focus", function() {
+        if (!telegramInput.value.trim()) {
+          telegramInput.value = "@";
+        }
+      });
+
+      telegramInput.addEventListener("input", function() {
+        let value = telegramInput.value;
+
+        value = value.replace(/\s/g, "");
+        value = value.replace(/@+/g, "");
+
+        telegramInput.value = value ? "@" + value : "@";
+      });
+
+      telegramInput.addEventListener("blur", function() {
+        if (telegramInput.value === "@") {
+          telegramInput.value = "";
+        } else {
+          telegramInput.value = normalizeTelegramInput(telegramInput.value);
+        }
+      });
+
+      form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        savedUserData = {
+          fullName: document.getElementById("fullName").value.trim(),
+          age: document.getElementById("age").value.trim(),
+          supercellId: document.getElementById("supercellId").value.trim(),
+          telegram: normalizeTelegramInput(document.getElementById("telegram").value)
+        };
+
+        rulesAccepted.checked = false;
+        startExamBtn.disabled = true;
+        rulesOverlay.classList.add("active");
+      });
+
+      rulesAccepted.addEventListener("change", function() {
+        startExamBtn.disabled = !rulesAccepted.checked;
+      });
+
+      cancelRulesBtn.addEventListener("click", function() {
+        rulesOverlay.classList.remove("active");
+      });
+
+      startExamBtn.addEventListener("click", function() {
+        if (!rulesAccepted.checked || !savedUserData) {
+          return;
+        }
+
+        localStorage.setItem("brawlExamUser", JSON.stringify(savedUserData));
+        localStorage.setItem("brawlExamStartTime", Date.now());
+        localStorage.removeItem("brawlExamResult");
+        localStorage.removeItem("brawlExamViolation");
+
+        window.location.href = "exam.html";
+      });
+
+      function normalizeTelegramInput(value) {
+        value = value.trim().replace(/\s/g, "").replace(/@+/g, "");
+
+        if (!value) {
+          return "";
+        }
+
+        return "@" + value;
       }
-    });
+    </script>
 
-    telegramInput.addEventListener("input", function() {
-      let value = telegramInput.value;
-
-      value = value.replace(/\s/g, "");
-      value = value.replace(/@+/g, "");
-
-      telegramInput.value = value ? "@" + value : "@";
-    });
-
-    telegramInput.addEventListener("blur", function() {
-      if (telegramInput.value === "@") {
-        telegramInput.value = "";
-      } else {
-        telegramInput.value = normalizeTelegramInput(telegramInput.value);
-      }
-    });
-
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      savedUserData = {
-        fullName: document.getElementById("fullName").value.trim(),
-        age: document.getElementById("age").value.trim(),
-        supercellId: document.getElementById("supercellId").value.trim(),
-        telegram: normalizeTelegramInput(document.getElementById("telegram").value)
-      };
-
-      rulesAccepted.checked = false;
-      startExamBtn.disabled = true;
-      rulesOverlay.classList.add("active");
-    });
-
-    rulesAccepted.addEventListener("change", function() {
-      startExamBtn.disabled = !rulesAccepted.checked;
-    });
-
-    cancelRulesBtn.addEventListener("click", function() {
-      rulesOverlay.classList.remove("active");
-    });
-
-    startExamBtn.addEventListener("click", function() {
-      if (!rulesAccepted.checked || !savedUserData) {
-        return;
-      }
-
-      localStorage.setItem("brawlExamUser", JSON.stringify(savedUserData));
-      localStorage.setItem("brawlExamStartTime", Date.now());
-      localStorage.removeItem("brawlExamResult");
-      localStorage.removeItem("brawlExamViolation");
-
-      window.location.href = "exam.html";
-    });
-
-    function normalizeTelegramInput(value) {
-      value = value.trim().replace(/\s/g, "").replace(/@+/g, "");
-
-      if (!value) {
-        return "";
-      }
-
-      return "@" + value;
-    }
-  </script>
-
-</body>
-</html>
+  </body>
+  </html>
