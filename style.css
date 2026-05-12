@@ -401,3 +401,18 @@
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
+.prize-info {
+  margin: 18px 0 24px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 214, 10, 0.18);
+  border: 1px solid rgba(255, 214, 10, 0.45);
+  text-align: center;
+  line-height: 1.5;
+  color: #fff;
+  font-size: 15px;
+}
+
+.prize-info b {
+  color: #ffd60a;
+}
